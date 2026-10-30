@@ -390,21 +390,26 @@
                 setLobbyMessage('Joining game…');
                 await ensureAuthenticated();
                 const ref = database.ref(`games/${id}`);
-                const result = await ref.transaction(room => {
-                    if (!room || !room.players || !room.players.w) return;
-                    if (room.players.w === currentUid || room.players.b === currentUid) return room;
-                    if (room.players.b) return;
-                    return { ...room, players: { ...room.players, b: currentUid } };
-                });
-                if (!result.committed || !result.snapshot.exists()) {
+                const snapshot = await ref.once('value');
+                if (!snapshot.exists()) {
                     setLobbyMessage('Game not found or both player seats are already taken.', true);
                     return;
                 }
-                const room = result.snapshot.val();
-                if (room.players.w !== currentUid && room.players.b !== currentUid) {
+                const room = snapshot.val();
+                const players = room && room.players;
+                if (!players || !players.w) {
+                    setLobbyMessage('This game has invalid player data and cannot be joined.', true);
+                    return;
+                }
+                if (players.w === currentUid || players.b === currentUid) {
+                    enterRoom(id, ref);
+                    return;
+                }
+                if (players.b) {
                     setLobbyMessage('This game already has two players.', true);
                     return;
                 }
+                await ref.child('players').update({ b: currentUid });
                 enterRoom(id, ref);
             } catch (error) {
                 console.error('Could not join game:', error);
