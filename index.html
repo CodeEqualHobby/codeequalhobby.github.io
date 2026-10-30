@@ -1055,24 +1055,34 @@ async function quitGame() {
         }
 
         // Initialize board on load
-        window.onload = function() {
-            if (!game && typeof Chess === 'function') {
-                game = new Chess();
-            }
-            renderBoard();
-            document.getElementById('undo-btn').title = 'Undo your most recent move';
-            document.getElementById('new-game-btn').title = 'Reset this online game';
-            document.getElementById('game-id-input').addEventListener('keydown', event => {
-                if (event.key === 'Enter') joinGameFromInput();
-            });
-            if (initializeFirebase()) {
-                const inviteId = new URLSearchParams(window.location.search).get('game');
-                if (inviteId) {
-                    document.getElementById('game-id-input').value = inviteId;
-                    joinGameFromInput();
-                }
-            }
-        };
+      window.onload = function() {
+    if (!game && typeof Chess === 'function') {
+        game = new Chess();
+    }
+    renderBoard();
+    
+ // Safely configure element titles if they exist
+    const quitBtn = document.getElementById('quit-btn');
+    if (quitBtn) quitBtn.title = 'Quit or leave current game';
+    
+    const newGameBtn = document.getElementById('new-game-btn');
+    if (newGameBtn) newGameBtn.title = 'Reset this online game';
+    
+    const gameInput = document.getElementById('game-id-input');
+    if (gameInput) {
+        gameInput.addEventListener('keydown', event => {
+            if (event.key === 'Enter') joinGameFromInput();
+        });
+    }
+
+    if (initializeFirebase()) {
+        const inviteId = new URLSearchParams(window.location.search).get('game');
+        if (inviteId) {
+            if (gameInput) gameInput.value = inviteId;
+            joinGameFromInput();
+        }
+    }
+};
     </script>
 </body>
 </html>
