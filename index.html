@@ -41,27 +41,21 @@
                 </div>
             </div>
 
-            <!-- Game Action Controls -->
-            <div class="flex items-center space-x-3">
-                <button id="pip-btn" onclick="togglePictureInPicture()" class="flex items-center space-x-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-xl shadow-sm transition active:scale-95">
-                    <svg class="w-4 h-4 text-indigo-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h12a2 2 0 012 2v2m-6 12h6a2 2 0 002-2v-6a2 2 0 00-2-2h-6a2 2 0 00-2 2v6a2 2 0 002 2z"></path>
-                    </svg>
-                    <span id="pip-btn-text">Play in PiP</span>
-                </button>
-                <button id="undo-btn" onclick="undoMove()" class="flex items-center space-x-2 px-4 py-2 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 text-sm font-medium rounded-xl shadow-sm transition active:scale-95">
-                    <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path>
-                    </svg>
-                    <span>Undo Move</span>
-                </button>
-                <button id="new-game-btn" onclick="newGame()" class="flex items-center space-x-2 px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white text-sm font-medium rounded-xl shadow-md transition active:scale-95">
-                    <svg class="w-4 h-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-                    </svg>
-                    <span>New Game</span>
-                </button>
-            </div>
+         <!-- Game Action Controls -->
+<div class="flex items-center space-x-3">
+    <button id="pip-btn" onclick="togglePictureInPicture()" class="flex items-center space-x-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-xl shadow-sm transition active:scale-95">
+        <svg class="w-4 h-4 text-indigo-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h12a2 2 0 012 2v2m-6 12h6a2 2 0 002-2v-6a2 2 0 00-2-2h-6a2 2 0 00-2 2v6a2 2 0 002 2z"></path></svg>
+        <span id="pip-btn-text">Play in PiP</span>
+    </button>
+    <button id="quit-btn" onclick="quitGame()" class="flex items-center space-x-2 px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white text-sm font-medium rounded-xl shadow-sm transition active:scale-95">
+        <svg class="w-4 h-4 text-rose-100" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+        <span>Quit Game</span>
+    </button>
+    <button id="new-game-btn" onclick="newGame()" class="flex items-center space-x-2 px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white text-sm font-medium rounded-xl shadow-md transition active:scale-95">
+        <svg class="w-4 h-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+        <span>New Game</span>
+    </button>
+</div>
         </div>
     </header>
 
@@ -128,7 +122,19 @@
             </div>
         </div>
     </main>
-
+<!-- Side Selection Modal (Shown when both players join) -->
+<div id="side-select-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-2xl p-6 shadow-2xl border border-slate-200 max-w-md w-full text-center space-y-4">
+        <h3 class="text-xl font-bold text-slate-900">Choose Your Side</h3>
+        <p class="text-sm text-slate-500">Both players are connected! Decide who plays White or Black, or let the system randomize it.</p>
+        <div class="grid grid-cols-3 gap-3 pt-2">
+            <button onclick="chooseSidePreference('w')" class="p-3 bg-amber-50 hover:bg-amber-100 border border-amber-200 rounded-xl text-slate-800 font-semibold text-sm transition">Play White</button>
+            <button onclick="chooseSidePreference('b')" class="p-3 bg-slate-800 hover:bg-slate-700 border border-slate-900 rounded-xl text-white font-semibold text-sm transition">Play Black</button>
+            <button onclick="chooseSidePreference('random')" class="p-3 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 rounded-xl text-indigo-700 font-semibold text-sm transition">Randomize</button>
+        </div>
+        <div id="side-select-status" class="text-xs text-slate-400 pt-2">Waiting for opponent's preference...</div>
+    </div>
+</div>
     <!-- Online game lobby -->
     <div id="game-lobby" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-40 p-4">
         <div class="bg-white rounded-2xl p-6 shadow-2xl border border-slate-200 max-w-md w-full space-y-5">
@@ -184,6 +190,8 @@
         let game;
         let pipWindow = null;
         let pipVideoElement = null;
+        let playerPreferences = {}; // Tracks side choices/preferences
+        let heartbeatInterval = null;
 
                 // Compat CDN globals are used below; do not use ES-module imports in this classic script.
                 // Copy databaseURL exactly from Firebase Console > Realtime Database.
@@ -328,41 +336,136 @@
             return syncedGame;
         }
 
-        function enterRoom(id, ref, assignedSide = getRoomSide(id)) {
-            if (roomRef && roomListener) roomRef.off('value', roomListener);
-            roomId = id;
-            roomRef = ref;
-            if (assignedSide) saveRoomSide(id, assignedSide);
-            setGameUrl(id);
-            roomListener = snapshot => {
-                const room = snapshot.val();
-                if (!room) {
-                    setLobbyMessage('This game no longer exists.', true);
-                    document.getElementById('game-lobby').classList.remove('hidden');
-                    return;
-                }
-                mySide = assignedSide && room.players && room.players[assignedSide] === currentUid
-                    ? assignedSide
-                    : room.players && room.players.w === currentUid ? 'w'
-                    : room.players && room.players.b === currentUid ? 'b' : null;
-                try {
-                    game = readRoomGame(room);
-                    selectedSquare = null;
-                    legalMoves = [];
-                    document.getElementById('game-lobby').classList.add('hidden');
-                    document.getElementById('room-info').textContent = `Game ${id} · ${mySide ? `You are ${mySide === 'w' ? 'White' : 'Black'}` : 'Spectating'} · ${room.players && room.players.b ? 'Both players connected' : 'Waiting for opponent'}`;
-                    document.getElementById('share-btn').classList.remove('hidden');
-                    renderBoard();
-                } catch (error) {
-                    console.error('Could not load synchronized game:', error);
-                    setLobbyMessage(error.message, true);
-                }
-            };
-            ref.on('value', roomListener, error => {
-                setLobbyMessage(`Could not read game: ${error.message}. Check your Realtime Database rules.`, true);
-                document.getElementById('game-lobby').classList.remove('hidden');
-            });
+        function startHeartbeat() {
+    if (heartbeatInterval) clearInterval(heartbeatInterval);
+    heartbeatInterval = setInterval(() => {
+        if (roomRef && currentUid) {
+            roomRef.child(`presence/${currentUid}`).set(Date.now());
         }
+    }, 5000); // Pulse every 5 seconds
+}
+
+function enterRoom(id, ref, assignedSide = getRoomSide(id)) {
+    if (roomRef && roomListener) roomRef.off('value', roomListener);
+    roomId = id;
+    roomRef = ref;
+    if (assignedSide) saveRoomSide(id, assignedSide);
+    setGameUrl(id);
+    startHeartbeat();
+
+    roomListener = snapshot => {
+        const room = snapshot.val();
+        if (!room) {
+            setLobbyMessage('This game no longer exists.', true);
+            document.getElementById('game-lobby').classList.remove('hidden');
+            return;
+        }
+
+        // Check if opponent is still online via presence timestamp (timeout > 12s)
+        const presence = room.presence || {};
+        const otherUid = room.players && (room.players.w === currentUid ? room.players.b : room.players.w);
+        const opponentOnline = otherUid && presence[otherUid] && (Date.now() - presence[otherUid] < 12000);
+
+        // Determine current side if not explicitly assigned
+        mySide = assignedSide && room.players && room.players[assignedSide] === currentUid ? assignedSide : 
+                 room.players && room.players.w === currentUid ? 'w' : 
+                 room.players && room.players.b === currentUid ? 'b' : null;
+
+        // Check if both players are in and game hasn't locked sides yet
+        const bothConnected = room.players && room.players.w && room.players.b;
+        const modal = document.getElementById('side-select-modal');
+
+        if (bothConnected && !room.sidesLocked) {
+            modal.classList.remove('hidden');
+            playerPreferences = room.preferences || {};
+            checkAndLockSides(room);
+        } else {
+            modal.classList.add('hidden');
+        }
+
+        try {
+            game = readRoomGame(room);
+            selectedSquare = null;
+            legalMoves = [];
+            document.getElementById('game-lobby').classList.add('hidden');
+            
+            let statusText = `Game ${id} · ${mySide ? `You are ${mySide === 'w' ? 'White' : 'Black'}` : 'Spectating'}`;
+            if (bothConnected) {
+                statusText += opponentOnline ? ' · Opponent Online 🟢' : ' · Opponent Offline 🔴';
+            } else {
+                statusText += ' · Waiting for opponent';
+            }
+            document.getElementById('room-info').textContent = statusText;
+            document.getElementById('share-btn').classList.remove('hidden');
+            renderBoard();
+        } catch (error) {
+            console.error('Could not load synchronized game:', error);
+            setLobbyMessage(error.message, true);
+        }
+    };
+
+    ref.on('value', roomListener, error => {
+        setLobbyMessage(`Could not read game: ${error.message}`, true);
+        document.getElementById('game-lobby').classList.remove('hidden');
+    });
+}
+
+function chooseSidePreference(pref) {
+    if (!roomRef || !mySide) return;
+    roomRef.child(`preferences/${currentUid}`).set(pref);
+    document.getElementById('side-select-status').textContent = 'Preference saved! Waiting for other player...';
+}
+
+function checkAndLockSides(room) {
+    const prefs = room.preferences || {};
+    const uids = room.players;
+    if (!uids.w || !uids.b) return;
+
+    // If both players have submitted preferences, resolve them
+    if (prefs[uids.w] && prefs[uids.b]) {
+        let wUser = uids.w;
+        let bUser = uids.b;
+
+        const pW = prefs[uids.w];
+        const pB = prefs[uids.b];
+
+        // Handle direct choices or randomization
+        if (pW === 'b' && pB === 'w') {
+            wUser = uids.b;
+            bUser = uids.w;
+        } else if (pW === 'random' || pB === 'random') {
+            if (Math.random() < 0.5) {
+                wUser = uids.b;
+                bUser = uids.w;
+            }
+        }
+
+        // Lock sides on Firebase transaction
+        roomRef.transaction(currentData => {
+            if (!currentData || currentData.sidesLocked) return;
+            return {
+                ...currentData,
+                players: { w: wUser, b: bUser },
+                sidesLocked: true
+            };
+        });
+    }
+}
+
+async function quitGame() {
+    if (!roomRef || !currentUid) return;
+    if (confirm('Are you sure you want to quit/leave this game?')) {
+        if (mySide) {
+            await roomRef.child(`players/${mySide}`).set(null);
+        }
+        await roomRef.child(`presence/${currentUid}`).set(null);
+        if (heartbeatInterval) clearInterval(heartbeatInterval);
+        roomId = null;
+        roomRef = null;
+        mySide = null;
+        window.location.href = window.location.pathname; // Reset query params and reload lobby
+    }
+}
 
         async function createGame() {
             if (!database || !firebaseAuth) {
@@ -857,12 +960,6 @@
         }
 
         // Undo last move (or 2 moves in pass-and-play if needed, standard chess.undo() undoes last ply)
-        function undoMove() {
-            if (!roomRef || !mySide) return;
-            selectedSquare = null;
-            legalMoves = [];
-            applyRoomAction({ type: 'undo' });
-        }
 
         // Start a brand new game
         function newGame() {
