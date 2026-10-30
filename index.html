@@ -297,6 +297,23 @@
             document.getElementById('game-id-input').value = id;
         }
 
+        function getRoomSide(id) {
+            try {
+                const side = sessionStorage.getItem(`chess-room-side:${id}`);
+                return side === 'w' || side === 'b' ? side : null;
+            } catch (error) {
+                return null;
+            }
+        }
+
+        function saveRoomSide(id, side) {
+            try {
+                sessionStorage.setItem(`chess-room-side:${id}`, side);
+            } catch (error) {
+                console.warn('Could not save this tab’s player seat:', error);
+            }
+        }
+
         function readRoomGame(room) {
             const syncedGame = new Chess();
             if (room.pgn) {
@@ -311,10 +328,11 @@
             return syncedGame;
         }
 
-        function enterRoom(id, ref) {
+        function enterRoom(id, ref, assignedSide = getRoomSide(id)) {
             if (roomRef && roomListener) roomRef.off('value', roomListener);
             roomId = id;
             roomRef = ref;
+            if (assignedSide) saveRoomSide(id, assignedSide);
             setGameUrl(id);
             roomListener = snapshot => {
                 const room = snapshot.val();
@@ -323,8 +341,10 @@
                     document.getElementById('game-lobby').classList.remove('hidden');
                     return;
                 }
-                mySide = room.players && room.players.w === currentUid ? 'w' :
-                    room.players && room.players.b === currentUid ? 'b' : null;
+                mySide = assignedSide && room.players && room.players[assignedSide] === currentUid
+                    ? assignedSide
+                    : room.players && room.players.w === currentUid ? 'w'
+                    : room.players && room.players.b === currentUid ? 'b' : null;
                 try {
                     game = readRoomGame(room);
                     selectedSquare = null;
@@ -365,7 +385,7 @@
                 };
                 const result = await ref.transaction(existingRoom => existingRoom === null ? newRoom : undefined);
                 if (!result.committed) throw new Error('Could not reserve a unique game room. Please try again.');
-                enterRoom(ref.key, ref);
+                enterRoom(ref.key, ref, 'w');
             } catch (error) {
                 console.error('Could not create game:', error);
                 setLobbyMessage(`Could not create game: ${error.message}. Check your Realtime Database rules.`, true);
@@ -401,8 +421,17 @@
                     setLobbyMessage('This game has invalid player data and cannot be joined.', true);
                     return;
                 }
-                if (players.w === currentUid || players.b === currentUid) {
-                    enterRoom(id, ref);
+                const savedSide = getRoomSide(id);
+                if (savedSide && players[savedSide] === currentUid) {
+                    enterRoom(id, ref, savedSide);
+                    return;
+                }
+                if (players.b === currentUid) {
+                    enterRoom(id, ref, 'b');
+                    return;
+                }
+                if (players.w === currentUid && players.b) {
+                    enterRoom(id, ref, 'w');
                     return;
                 }
                 if (players.b) {
@@ -410,7 +439,7 @@
                     return;
                 }
                 await ref.child('players').update({ b: currentUid });
-                enterRoom(id, ref);
+                enterRoom(id, ref, 'b');
             } catch (error) {
                 console.error('Could not join game:', error);
                 setLobbyMessage(`Could not join game: ${error.message}. Check your Realtime Database rules.`, true);
